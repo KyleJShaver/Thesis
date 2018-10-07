@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -r captchas
+rm -r letters
+rm model.hdf5
+rm labels.dat

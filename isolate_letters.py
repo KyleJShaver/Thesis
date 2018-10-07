@@ -4,7 +4,7 @@ import glob
 import os.path
 import cv2
 
-src_folder = "bulk"
+src_folder = "captchas"
 out_folder = "letters"
 seen_letters = {}
 

@@ -11,7 +11,7 @@ darkestgray = 255
 lightestgray = 255
 color = False
 wobble = 10
-num = 9900
+num = 10000
 num_letters = 4
 percent_notifier = .05
 out_folder = "captchas"
@@ -21,6 +21,9 @@ def randval(small, big):
 
 def randdec(small, big):
     return randval(small * 100, big * 100) / 100.0
+
+def usedglyphs():
+    return "QWERTYUIOPASDFGHJKLZXCVBNM1234567890"
 def gen(num):
     next_percent = percent_notifier
     for i in range(0, num):
@@ -37,7 +40,7 @@ def gen(num):
                     g = randval(darkestgray,lightestgray)
                     b = randval(darkestgray,lightestgray)
                 img.putpixel((x,y), (r, g, b, 255))
-        glyphs = "QWERTYUIOPASDFGHJKLZXCVBNM123456789"
+        glyphs = usedglyphs()
         x_pos = 0
         filename = ""
         img
@@ -54,8 +57,8 @@ def gen(num):
             img = Image.alpha_composite(img, rotated)
         if num > 1:
             out_path = os.path.join(out_folder, filename)
-            if not os.path.exists(out_path):
-                os.makedirs(out_path)
+            if not os.path.exists(out_folder):
+                os.makedirs(out_folder)
             img.save(out_path + ".png")
         else:
             img.save('out.png')

@@ -1,0 +1,9 @@
+numpy
+imutils
+sklearn
+tensorflow
+keras
+opencv-python
+six
+wheel
+mock

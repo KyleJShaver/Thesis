@@ -6,3 +6,4 @@ letters/
 captchas/
 captchas_solve/
 out.png
+confidence.csv

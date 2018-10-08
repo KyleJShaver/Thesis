@@ -11,10 +11,16 @@ darkestgray = 255
 lightestgray = 255
 color = False
 wobble = 10
-num = 10000
+
 num_letters = 4
 percent_notifier = .05
+'''
 out_folder = "captchas"
+num = 10000
+'''
+out_folder = "captchas_solve"
+num = 1000
+
 
 def randval(small, big):
     return random.randint(small, big)

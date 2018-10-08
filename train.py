@@ -56,15 +56,15 @@ with open(model_labelfile, "wb") as labelfile:
     pickle.dump(lb, labelfile)
 
 model = Sequential()
-model.add(Conv2D(20, (5, 5), padding="same", input_shape=(20, 20, 1), activation="relu"))
+model.add(Conv2D(20, (5, 5), padding="same", input_shape=(20, 20, 1), activation="tanh"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-model.add(Conv2D(50, (5, 5), padding="same", activation="relu"))
+model.add(Conv2D(50, (5, 5), padding="same", activation="tanh"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
 # Hidden layer with 500 nodes
 model.add(Flatten())
-model.add(Dense(500, activation="relu"))
+model.add(Dense(500, activation="tanh"))
 
 # Output layer with 36 nodes (one for each possible letter/number we predict)
 model.add(Dense(len(usedglyphs()), activation="softmax"))

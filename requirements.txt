@@ -7,3 +7,4 @@ opencv-python
 six
 wheel
 mock
+Pillow

@@ -38,7 +38,7 @@ def parallelcaptchas(num, folder):
                 task = [pythoncall, "captcha.py", "{}".format(numgenerate + diff), folder]
                 diff -= diff
                 cmd = list2cmdline(task)
-                processes.append(Popen(cmd))
+                processes.append(Popen(cmd, shellsystem=True))
                 started += 1
             for p in processes:
                 if p.poll() is not None:
@@ -114,7 +114,7 @@ def runapproach(addcaptchas, folder, letters, model, label, output):
         os.makedirs(folder)
         os.makedirs(letters)
         isolate_letters.isolateletters(common.KS_CAPTCHA_SOLVE_FOLDER, letters, addcaptchas)
-        train.train(common.KS_LETTERS_DST_FOLDER, model, label, letters)
+        train.train(common.KS_LETTERS_DST_FOLDER, model, label, letters, common.KS_MODEL_FILE)
         solve.solve(model, label, common.KS_CAPTCHA_IMMUT_FOLDER, output)
     common.compareimmut(output)
 

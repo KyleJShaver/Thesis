@@ -41,6 +41,9 @@ KS_APP_LEAST_REP_IMMUT = os.path.join(KS_APP_LEAST_REP_FOLDER, "immut.csv")
 
 IMAGE_SIZE = 20
 
+def usedglyphs():
+    return "QWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+
 def openimage(path):
     filename = os.path.basename(path)
     filename_letters = os.path.splitext(filename)[0]

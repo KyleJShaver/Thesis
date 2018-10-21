@@ -30,8 +30,7 @@ def randval(small, big):
 def randdec(small, big):
     return randval(small * 100, big * 100) / 100.0
 
-def usedglyphs():
-    return "QWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+
 def gen(num, foldername):
     next_percent = percent_notifier
     for i in range(0, num):
@@ -47,7 +46,7 @@ def gen(num, foldername):
                     g = randval(darkestgray, lightestgray)
                     b = randval(darkestgray, lightestgray)
                 img.putpixel((x, y), (r, g, b, 255))
-        glyphs = usedglyphs()
+        glyphs = common.usedglyphs()
         x_pos = 0
         filename = ""
         for ltr in range(0,num_letters):

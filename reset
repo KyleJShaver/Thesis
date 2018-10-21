@@ -1,6 +1,13 @@
 #!/bin/bash
 
 rm -r captchas
+rm -r captchas_train
+rm -r captchas_solve
+rm -r captchas_immut
 rm -r letters
 rm model.hdf5
 rm labels.dat
+rm out.png
+rm confidence.csv
+rm immut_baseline.csv
+rm solve_baseline.csv

@@ -1,0 +1,107 @@
+# Import project files
+import captcha
+import isolate_letters
+import train
+import solve
+import common
+
+import approaches
+
+import os
+# import shutil shutil.rmtree()
+
+# --------------------
+# ------ STEP 1 ------
+# --------------------
+
+print("\nGenerating CAPTCHAs...\n")
+
+# Generate captchas to train the system
+if os.path.exists(common.KS_CAPTCHA_TRAIN_FOLDER):
+    print("folder {} already exists".format(common.KS_CAPTCHA_TRAIN_FOLDER))
+else:
+    captcha.gen(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER)
+    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER))
+
+# Generate the captchas to test and determine which ones to use to retrain the model
+if os.path.exists(common.KS_CAPTCHA_SOLVE_FOLDER):
+    print("folder {} already exists".format(common.KS_CAPTCHA_SOLVE_FOLDER))
+else:
+    captcha.gen(common.KS_CAPTCHA_SOLVE_NUM, common.KS_CAPTCHA_SOLVE_FOLDER)
+    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_SOLVE_NUM, common.KS_CAPTCHA_SOLVE_FOLDER))
+
+# Generate an immutable set to analyze performance
+if os.path.exists(common.KS_CAPTCHA_IMMUT_FOLDER):
+    print("folder {} already exists".format(common.KS_CAPTCHA_IMMUT_FOLDER))
+else:
+    captcha.gen(common.KS_CAPTCHA_IMMUT_NUM, common.KS_CAPTCHA_IMMUT_FOLDER)
+    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_IMMUT_NUM, common.KS_CAPTCHA_IMMUT_FOLDER))
+
+# --------------------
+# ------ STEP 2 ------
+# --------------------
+
+print("\nIsolating letters for the training CAPTCHAs...\n")
+
+# Isolate the letters in the training captchas
+if os.path.exists(common.KS_CAPTCHA_IMMUT_FOLDER):
+    print("folder {} already exists".format(common.KS_LETTERS_DST_FOLDER))
+else:
+    isolate_letters.isolateletters(common.KS_CAPTCHA_TRAIN_FOLDER, common.KS_LETTERS_DST_FOLDER)
+    print("Done isolating letters from training captchas to {}\n\n".format(common.KS_CAPTCHA_TRAIN_FOLDER))
+
+# --------------------
+# ------ STEP 3 ------
+# --------------------
+
+print("\nTraining model...\n")
+
+# Train the model
+if os.path.exists(common.KS_MODEL_FILE) and os.path.exists(common.KS_LABEL_FILE):
+    print("files {} and {} already exists".format(common.KS_MODEL_FILE, common.KS_LABEL_FILE))
+else:
+    train.train(common.KS_LETTERS_DST_FOLDER, common.KS_MODEL_FILE, common.KS_LABEL_FILE)
+    print("Done training model to {}\n\n".format(common.KS_MODEL_FILE))
+
+# --------------------
+# ------ STEP 4 ------
+# --------------------
+
+print("\nSoling CAPTHAs...\n")
+
+# Get baseline for capthas_solve
+if os.path.exists(common.KS_SOLVE_BASELINE):
+    print("file {} already exists".format(common.KS_SOLVE_BASELINE))
+else:
+    solve.solve(common.KS_MODEL_FILE, common.KS_LABEL_FILE, common.KS_CAPTCHA_SOLVE_FOLDER, common.KS_SOLVE_BASELINE)
+    print("Done solving for CAPTCHAs in {} and saved to {}".format(common.KS_CAPTCHA_SOLVE_FOLDER, common.KS_SOLVE_BASELINE))
+
+# Get baseline for capthas_immut
+if os.path.exists(common.KS_IMMUT_BASELINE):
+    print("file {} already exists".format(common.KS_IMMUT_BASELINE))
+else:
+    solve.solve(common.KS_MODEL_FILE, common.KS_LABEL_FILE, common.KS_CAPTCHA_IMMUT_FOLDER, common.KS_IMMUT_BASELINE)
+    print("Done solving for CAPTCHAs in {} and saved to {}".format(common.KS_CAPTCHA_IMMUT_FOLDER, common.KS_IMMUT_BASELINE))
+
+# --------------------
+# ------ STEP 5 ------
+# --------------------
+
+def runapproach(addcaptchas, folder, letters, model, label, output):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+        os.makedirs(letters)
+        isolate_letters.isolateletters(common.KS_CAPTCHA_SOLVE_FOLDER, letters, addcaptchas)
+        train.train(common.KS_LETTERS_DST_FOLDER, model, label, letters)
+        solve.solve(model, label, common.KS_CAPTCHA_IMMUT_FOLDER, output)
+    common.compareimmut(output)
+
+print("\nRunning approaches...\n")
+
+# Run random
+random = approaches.random()
+runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
+
+# Run lowest average confidence
+lowest = approaches.lowest_average()
+runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)

@@ -18,7 +18,7 @@ src_folder = "letters"
 model_savefile = "model.hdf5"
 model_labelfile = "labels.dat"
 
-def train(infolder, outmodelfile, outlabelfile, addcaptchas):
+def train(infolder, outmodelfile, outlabelfile, addcaptchas=None):
     data = []
     labels = []
 

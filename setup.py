@@ -8,35 +8,56 @@ import common
 import approaches
 
 import os
+import sys
 import datetime
+import multiprocessing
+from subprocess import list2cmdline, Popen
 # import shutil shutil.rmtree()
 
 # --------------------
 # ------ STEP 1 ------
 # --------------------
+
 start = datetime.datetime.now()
 print("\nGenerating CAPTCHAs...\n")
 
+def parallelcaptchas(num, folder):
+    if os.path.exists(folder):
+        print("folder {} already exists".format(folder))
+    else:
+        os.makedirs(folder)
+        numgenerate = int(num / multiprocessing.cpu_count())
+        diff = num - (numgenerate * multiprocessing.cpu_count())
+        processes = []
+        started = 0
+        while True:
+            while len(processes) < multiprocessing.cpu_count() and started < multiprocessing.cpu_count():
+                pythoncall = "python"
+                if __name__ == "__main__" and len(sys.argv) > 1:
+                    pythoncall = sys.argv[1]
+                task = [pythoncall, "captcha.py", "{}".format(numgenerate + diff), folder]
+                diff -= diff
+                cmd = list2cmdline(task)
+                processes.append(Popen(cmd))
+                started += 1
+            for p in processes:
+                if p.poll() is not None:
+                    if p.returncode == 0:
+                        processes.remove(p)
+                    else:
+                        sys.exit(1)
+            if not processes:
+                break
+        print("{} Done generating {} captchas in {}\n\n".format(datetime.datetime.now() - start, num, folder))
+
 # Generate captchas to train the system
-if os.path.exists(common.KS_CAPTCHA_TRAIN_FOLDER):
-    print("folder {} already exists".format(common.KS_CAPTCHA_TRAIN_FOLDER))
-else:
-    captcha.gen(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER)
-    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER))
+parallelcaptchas(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER)
 
 # Generate the captchas to test and determine which ones to use to retrain the model
-if os.path.exists(common.KS_CAPTCHA_SOLVE_FOLDER):
-    print("folder {} already exists".format(common.KS_CAPTCHA_SOLVE_FOLDER))
-else:
-    captcha.gen(common.KS_CAPTCHA_SOLVE_NUM, common.KS_CAPTCHA_SOLVE_FOLDER)
-    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_SOLVE_NUM, common.KS_CAPTCHA_SOLVE_FOLDER))
+parallelcaptchas(common.KS_CAPTCHA_SOLVE_NUM, common.KS_CAPTCHA_SOLVE_FOLDER)
 
 # Generate an immutable set to analyze performance
-if os.path.exists(common.KS_CAPTCHA_IMMUT_FOLDER):
-    print("folder {} already exists".format(common.KS_CAPTCHA_IMMUT_FOLDER))
-else:
-    captcha.gen(common.KS_CAPTCHA_IMMUT_NUM, common.KS_CAPTCHA_IMMUT_FOLDER)
-    print("Done generating {} captchas in {}\n\n".format(common.KS_CAPTCHA_IMMUT_NUM, common.KS_CAPTCHA_IMMUT_FOLDER))
+parallelcaptchas(common.KS_CAPTCHA_IMMUT_NUM, common.KS_CAPTCHA_IMMUT_FOLDER)
 
 # --------------------
 # ------ STEP 2 ------
@@ -49,7 +70,7 @@ if os.path.exists(common.KS_LETTERS_DST_FOLDER):
     print("folder {} already exists".format(common.KS_LETTERS_DST_FOLDER))
 else:
     isolate_letters.isolateletters(common.KS_CAPTCHA_TRAIN_FOLDER, common.KS_LETTERS_DST_FOLDER)
-    print("Done isolating letters from training captchas to {}\n\n".format(common.KS_CAPTCHA_TRAIN_FOLDER))
+    print("{} Done isolating letters from training captchas to {}\n\n".format(datetime.datetime.now() - start, common.KS_CAPTCHA_TRAIN_FOLDER))
 
 # --------------------
 # ------ STEP 3 ------
@@ -62,7 +83,7 @@ if os.path.exists(common.KS_MODEL_FILE) and os.path.exists(common.KS_LABEL_FILE)
     print("files {} and {} already exists".format(common.KS_MODEL_FILE, common.KS_LABEL_FILE))
 else:
     train.train(common.KS_LETTERS_DST_FOLDER, common.KS_MODEL_FILE, common.KS_LABEL_FILE)
-    print("Done training model to {}\n\n".format(common.KS_MODEL_FILE))
+    print("{} Done training model to {}\n\n".format(datetime.datetime.now() - start, common.KS_MODEL_FILE))
 
 # --------------------
 # ------ STEP 4 ------
@@ -75,14 +96,14 @@ if os.path.exists(common.KS_SOLVE_BASELINE):
     print("file {} already exists".format(common.KS_SOLVE_BASELINE))
 else:
     solve.solve(common.KS_MODEL_FILE, common.KS_LABEL_FILE, common.KS_CAPTCHA_SOLVE_FOLDER, common.KS_SOLVE_BASELINE)
-    print("Done solving for CAPTCHAs in {} and saved to {}".format(common.KS_CAPTCHA_SOLVE_FOLDER, common.KS_SOLVE_BASELINE))
+    print("{} Done solving for CAPTCHAs in {} and saved to {}".format(datetime.datetime.now() - start, common.KS_CAPTCHA_SOLVE_FOLDER, common.KS_SOLVE_BASELINE))
 
 # Get baseline for capthas_immut
 if os.path.exists(common.KS_IMMUT_BASELINE):
     print("file {} already exists".format(common.KS_IMMUT_BASELINE))
 else:
     solve.solve(common.KS_MODEL_FILE, common.KS_LABEL_FILE, common.KS_CAPTCHA_IMMUT_FOLDER, common.KS_IMMUT_BASELINE)
-    print("Done solving for CAPTCHAs in {} and saved to {}".format(common.KS_CAPTCHA_IMMUT_FOLDER, common.KS_IMMUT_BASELINE))
+    print("{} Done solving for CAPTCHAs in {} and saved to {}".format(datetime.datetime.now() - start, common.KS_CAPTCHA_IMMUT_FOLDER, common.KS_IMMUT_BASELINE))
 
 # --------------------
 # ------ STEP 5 ------
@@ -114,6 +135,7 @@ for _ in range (0, 2):
     # Run least represented letter
     least = approaches.least_rep()
     runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
+    print("{} Done running all approaches".format(datetime.datetime.now() - start))
 
 end = datetime.datetime.now()
-print("Runtime was: {}".format(end - start))
+print("Total runtime was: {}".format(end - start))

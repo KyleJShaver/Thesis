@@ -6,6 +6,7 @@ from PIL import ImageDraw
 import random
 import os.path
 import common
+import sys
 
 size = (172, 56)
 darkestgray = 255
@@ -67,5 +68,12 @@ def gen(num, foldername):
             img.save(out_path + ".png")
         else:
             img.save('out.png')
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        exit(1)
+    else:
+        print("generating {} CAPTCHAs to {}".format(sys.argv[1], sys.argv[2]))
+        gen(int(sys.argv[1]), sys.argv[2])
 
 #gen(num, out_folder)

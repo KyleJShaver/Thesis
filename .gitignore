@@ -15,4 +15,6 @@ app*/
 
 __pycache__/
 
+\labels.dat
+\model.hdf5
 \.DS_Store

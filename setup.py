@@ -42,7 +42,7 @@ def parallelcaptchas(num, folder):
                 if system() == "Windows":
                     processes.append(Popen(cmd))
                 else:
-                    processes.append(Popen(cmd, shellsystem=True))
+                    processes.append(Popen(cmd, shell=True))
                 started += 1
             for p in processes:
                 if p.poll() is not None:

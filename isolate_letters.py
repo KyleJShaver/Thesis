@@ -10,7 +10,7 @@ out_folder = "letters"
 
 
 
-def isolateletters(infolder, outfolder, manualcaptchas):
+def isolateletters(infolder, outfolder, manualcaptchas=None):
     seen_letters = {}
     files = glob.glob(os.path.join(infolder, "*"))
 

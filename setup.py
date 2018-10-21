@@ -8,12 +8,13 @@ import common
 import approaches
 
 import os
+import datetime
 # import shutil shutil.rmtree()
 
 # --------------------
 # ------ STEP 1 ------
 # --------------------
-
+start = datetime.datetime.now()
 print("\nGenerating CAPTCHAs...\n")
 
 # Generate captchas to train the system
@@ -44,7 +45,7 @@ else:
 print("\nIsolating letters for the training CAPTCHAs...\n")
 
 # Isolate the letters in the training captchas
-if os.path.exists(common.KS_CAPTCHA_IMMUT_FOLDER):
+if os.path.exists(common.KS_LETTERS_DST_FOLDER):
     print("folder {} already exists".format(common.KS_LETTERS_DST_FOLDER))
 else:
     isolate_letters.isolateletters(common.KS_CAPTCHA_TRAIN_FOLDER, common.KS_LETTERS_DST_FOLDER)
@@ -67,7 +68,7 @@ else:
 # ------ STEP 4 ------
 # --------------------
 
-print("\nSoling CAPTHAs...\n")
+print("\nSolving CAPTHAs...\n")
 
 # Get baseline for capthas_solve
 if os.path.exists(common.KS_SOLVE_BASELINE):
@@ -97,19 +98,22 @@ def runapproach(addcaptchas, folder, letters, model, label, output):
     common.compareimmut(output)
 
 print("\nRunning approaches...\n")
+for _ in range (0, 2):
+    # Run random
+    random = approaches.random()
+    runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
 
-# Run random
-random = approaches.random()
-runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
+    # Run lowest average confidence
+    lowest = approaches.lowest_average()
+    runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
 
-# Run lowest average confidence
-lowest = approaches.lowest_average()
-runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
+    # Run lowest letter confidence
+    lowest = approaches.lowest_letter()
+    runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
 
-# Run lowest letter confidence
-lowest = approaches.lowest_letter()
-runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
+    # Run least represented letter
+    least = approaches.least_rep()
+    runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
 
-# Run lowest letter confidence
-least = approaches.least_rep()
-runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
+end = datetime.datetime.now()
+print("Runtime was: {}".format(end - start))

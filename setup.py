@@ -12,6 +12,7 @@ import sys
 import datetime
 import multiprocessing
 from subprocess import list2cmdline, Popen
+from platform import system
 # import shutil shutil.rmtree()
 
 # --------------------
@@ -38,7 +39,10 @@ def parallelcaptchas(num, folder):
                 task = [pythoncall, "captcha.py", "{}".format(numgenerate + diff), folder]
                 diff -= diff
                 cmd = list2cmdline(task)
-                processes.append(Popen(cmd, shellsystem=True))
+                if system() == "Windows":
+                    processes.append(Popen(cmd))
+                else:
+                    processes.append(Popen(cmd, shellsystem=True))
                 started += 1
             for p in processes:
                 if p.poll() is not None:

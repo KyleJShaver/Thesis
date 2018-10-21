@@ -9,16 +9,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 import pickle
 from keras.models import Sequential
+from keras.models import load_model
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.core import Flatten, Dense
-from captcha import usedglyphs
 import common
 
 src_folder = "letters"
 model_savefile = "model.hdf5"
 model_labelfile = "labels.dat"
 
-def train(infolder, outmodelfile, outlabelfile, addcaptchas=None):
+def train(infolder, outmodelfile, outlabelfile, addcaptchas=None, existingmodel=None):
     data = []
     labels = []
 
@@ -63,18 +63,21 @@ def train(infolder, outmodelfile, outlabelfile, addcaptchas=None):
         pickle.dump(lb, labelfile)
 
     model = Sequential()
-    model.add(Conv2D(20, (5, 5), padding="same", input_shape=(20, 20, 1), activation="tanh"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    if existingmodel is None:
+        model.add(Conv2D(20, (5, 5), padding="same", input_shape=(20, 20, 1), activation="tanh"))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-    model.add(Conv2D(50, (5, 5), padding="same", activation="tanh"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+        model.add(Conv2D(50, (5, 5), padding="same", activation="tanh"))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-    model.add(Flatten())
-    model.add(Dense(500, activation="tanh"))
+        model.add(Flatten())
+        model.add(Dense(500, activation="tanh"))
 
-    model.add(Dense(len(usedglyphs()), activation="softmax"))
+        model.add(Dense(len(common.usedglyphs()), activation="softmax"))
 
-    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+        model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    else:
+        model = load_model(existingmodel)
     model.fit(trnx, trny, validation_data=(tstx, tsty), epochs=10, verbose=1)
 
     model.save(outmodelfile)

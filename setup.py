@@ -105,3 +105,11 @@ runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, c
 # Run lowest average confidence
 lowest = approaches.lowest_average()
 runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
+
+# Run lowest letter confidence
+lowest = approaches.lowest_letter()
+runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
+
+# Run lowest letter confidence
+least = approaches.least_rep()
+runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)

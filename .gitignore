@@ -11,7 +11,7 @@ out.png
 confidence.csv
 immut_baseline.csv
 solve_baseline.csv
-app_lowest_avg/
+app*/
 
 __pycache__/
 

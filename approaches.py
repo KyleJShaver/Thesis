@@ -4,6 +4,15 @@ import csv
 import os
 from random import shuffle
 
+def getprops(folder):
+    props = dict()
+    props["folder"] = folder
+    props["letters"] = os.path.join(folder, "letters")
+    props["model"] = os.path.join(folder, common.KS_MODEL_FILE)
+    props["labels"] = os.path.join(folder, common.KS_LABEL_FILE)
+    props["immut"] = os.path.join(folder, "immut.csv")
+    return props
+
 def random():
     with open(common.KS_SOLVE_BASELINE) as solvebase:
         reader = csv.DictReader(solvebase)
@@ -61,3 +70,27 @@ def least_rep():
             least = least[:common.KS_NUM_CAPTCHAS_ADD]
         least = list(map(lambda a: os.path.join(common.KS_CAPTCHA_SOLVE_FOLDER, a["CAPTCHA"]) + ".png", least))
         return least
+
+def unknown_lowest_average():
+    with open(common.KS_SOLVE_BASELINE) as solvebase:
+        reader = csv.DictReader(solvebase)
+        rows = []
+        for row in reader:
+            rows.append(row)
+        rows = sorted(rows, key=lambda a: a["AVG"])
+        rows = sorted(rows, key=lambda a: a["CORRECT"])
+        incorrect = rows[:common.KS_NUM_CAPTCHAS_ADD]
+        incorrect = list(map(lambda a: os.path.join(common.KS_CAPTCHA_SOLVE_FOLDER, a["CAPTCHA"]) + ".png", incorrect))
+        return incorrect
+
+def unknown_random():
+    with open(common.KS_SOLVE_BASELINE) as solvebase:
+        reader = csv.DictReader(solvebase)
+        rows = []
+        for row in reader:
+            rows.append(row)
+        shuffle(rows)
+        rows = sorted(rows, key=lambda a: a["CORRECT"])
+        rand = rows[:common.KS_NUM_CAPTCHAS_ADD]
+        rand = list(map(lambda a: os.path.join(common.KS_CAPTCHA_SOLVE_FOLDER, a["CAPTCHA"]) + ".png", rand))
+        return rand

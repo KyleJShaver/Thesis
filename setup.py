@@ -130,26 +130,46 @@ while True:
             solve.solve(model, label, common.KS_CAPTCHA_IMMUT_FOLDER, output)
         common.compareimmut(output)
 
+    def runapproachprops(addcaptchas, props):
+        runapproach(addcaptchas, props["folder"], props["letters"], props["model"], props["labels"], props["immut"])
+
     print("\nRunning approaches...\n")
     # Run random
-    results_files["random"] = common.KS_APP_RANDOM_IMMUT
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["random"] = props["immut"]
     random = approaches.random()
-    runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
+    runapproachprops(random, props)
 
     # Run lowest average confidence
-    results_files["lowest_average"] = common.KS_APP_LOWEST_AVG_IMMUT
-    lowest = approaches.lowest_average()
-    runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["lowest_average"] = props["immut"]
+    random = approaches.lowest_average()
+    runapproachprops(random, props)
 
     # Run lowest letter confidence
-    results_files["lowest_letter_confidence"] = common.KS_APP_LOWEST_LETTER_IMMUT
-    lowest = approaches.lowest_letter()
-    runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["lowest_letter_confidence"] = props["immut"]
+    random = approaches.lowest_letter()
+    runapproachprops(random, props)
 
     # Run least represented letter
-    results_files["least_represented_letter"] = common.KS_APP_LEAST_REP_IMMUT
-    least = approaches.least_rep()
-    runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["least_represented_letter"] = props["immut"]
+    random = approaches.least_rep()
+    runapproachprops(random, props)
+
+    # Run unknown (priority given to lowest average)
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["unknown_lowest_average"] = props["immut"]
+    random = approaches.unknown_lowest_average()
+    runapproachprops(random, props)
+
+    # Run unknown (random priority)
+    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    results_files["unknown_random"] = props["immut"]
+    random = approaches.unknown_random()
+    runapproachprops(random, props)
+
     print("{} Done running all approaches".format(datetime.datetime.now() - start))
 
     end = datetime.datetime.now()

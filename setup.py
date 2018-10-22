@@ -172,7 +172,7 @@ while True:
 
     # Run unknown (priority to lowest letter confidence)
     props = approaches.getprops(common.KS_APP_UNKNOWN_LOWEST_LETTER_FOLDER)
-    results_files["unknown_random"] = props["immut"]
+    results_files["unknown_lowest_letter"] = props["immut"]
     random = approaches.unknown_lowest_letter()
     runapproachprops(random, props)
 

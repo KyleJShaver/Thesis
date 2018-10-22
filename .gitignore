@@ -18,3 +18,5 @@ __pycache__/
 \labels.dat
 \model.hdf5
 \.DS_Store
+
+Dockerfile

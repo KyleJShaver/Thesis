@@ -1,6 +1,8 @@
 import os.path
 import cv2
 import csv
+import http.client
+import json
 
 KS_CAPTCHA_TRAIN_FOLDER = "captchas_train"
 KS_CAPTCHA_TRAIN_NUM = 10000
@@ -86,6 +88,12 @@ def avginccounts(reader):
     avg /= rows
     return avg, inc
 
+def analyzefile(file):
+    with open(file) as csv_file:
+        reader = csv.DictReader(csv_file)
+        _, incorrect = avginccounts(reader)
+        return incorrect
+
 def compareimmut(app_file):
     with open(KS_IMMUT_BASELINE) as immut_base:
         basereader = csv.DictReader(immut_base)
@@ -96,3 +104,19 @@ def compareimmut(app_file):
         appavg, appinc = avginccounts(appreader)
 
     print("Results went from avg of {:.4f} with {} incorrect to avg of {:.4f} with {} incorrect".format(baseavg, baseinc, appavg, appinc))
+
+def sendtofirebase(url, data):
+    conn = http.client.HTTPSConnection(url)
+
+    payload = json.dumps(data)
+
+    headers = {
+        'Content-Type': "application/json",
+        }
+
+    conn.request("POST", "/data.json", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print(data.decode("utf-8"))

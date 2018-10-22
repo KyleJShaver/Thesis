@@ -4,6 +4,7 @@ import isolate_letters
 import train
 import solve
 import common
+import reset
 
 import approaches
 
@@ -13,6 +14,8 @@ import datetime
 import multiprocessing
 from subprocess import list2cmdline, Popen
 from platform import system
+import uuid
+import json
 # import shutil shutil.rmtree()
 
 # --------------------
@@ -20,6 +23,10 @@ from platform import system
 # --------------------
 
 start = datetime.datetime.now()
+UUID = str(uuid.uuid4())
+results_files = dict()
+results_files["baseline"] = common.KS_IMMUT_BASELINE
+
 print("\nGenerating CAPTCHAs...\n")
 
 def parallelcaptchas(num, folder):
@@ -123,23 +130,33 @@ def runapproach(addcaptchas, folder, letters, model, label, output):
     common.compareimmut(output)
 
 print("\nRunning approaches...\n")
-for _ in range (0, 2):
-    # Run random
-    random = approaches.random()
-    runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
+# Run random
+results_files["random"] = common.KS_APP_RANDOM_IMMUT
+random = approaches.random()
+runapproach(random, common.KS_APP_RANDOM_FOLDER, common.KS_APP_RANDOM_LETTERS, common.KS_APP_RANDOM_MODEL, common.KS_APP_RANDOM_LABEL, common.KS_APP_RANDOM_IMMUT)
 
-    # Run lowest average confidence
-    lowest = approaches.lowest_average()
-    runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
+# Run lowest average confidence
+results_files["lowest_average"] = common.KS_APP_LOWEST_AVG_IMMUT
+lowest = approaches.lowest_average()
+runapproach(lowest, common.KS_APP_LOWEST_AVG_FOLDER, common.KS_APP_LOWEST_AVG_LETTERS, common.KS_APP_LOWEST_AVG_MODEL, common.KS_APP_LOWEST_AVG_LABEL, common.KS_APP_LOWEST_AVG_IMMUT)
 
-    # Run lowest letter confidence
-    lowest = approaches.lowest_letter()
-    runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
+# Run lowest letter confidence
+results_files["lowest_letter_confidence"] = common.KS_APP_LOWEST_LETTER_IMMUT
+lowest = approaches.lowest_letter()
+runapproach(lowest, common.KS_APP_LOWEST_LETTER_FOLDER, common.KS_APP_LOWEST_LETTER_LETTERS, common.KS_APP_LOWEST_LETTER_MODEL, common.KS_APP_LOWEST_LETTER_LABEL, common.KS_APP_LOWEST_LETTER_IMMUT)
 
-    # Run least represented letter
-    least = approaches.least_rep()
-    runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
-    print("{} Done running all approaches".format(datetime.datetime.now() - start))
+# Run least represented letter
+results_files["least_represented_letter"] = common.KS_APP_LEAST_REP_IMMUT
+least = approaches.least_rep()
+runapproach(least, common.KS_APP_LEAST_REP_FOLDER, common.KS_APP_LEAST_REP_LETTERS, common.KS_APP_LEAST_REP_MODEL, common.KS_APP_LEAST_REP_LABEL, common.KS_APP_LEAST_REP_IMMUT)
+print("{} Done running all approaches".format(datetime.datetime.now() - start))
 
 end = datetime.datetime.now()
+post_data = dict()
+for approach, file in results_files.items():
+    post_data[approach] = common.analyzefile(file)
+post_data["uuid"] = UUID
+post_data["time"] = str(end)
+common.sendtofirebase(sys.argv[2], post_data)
+
 print("Total runtime was: {}".format(end - start))

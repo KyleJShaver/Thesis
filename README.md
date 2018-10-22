@@ -5,6 +5,6 @@ In virtually every machine learning system, a situation can occur wherein an inp
 
 ## Instructions to run
 1. `cd` into the directory so that `Dockerfile` is in the root
-2. `docker build -t kyleshaver/thesis .`
-3. `docker run -it -p 8888:8888 -p 6006:6006 -v $(pwd)/bulk:/notebooks/bulk kyleshaver/thesis:latest`
-4. Open web browser and navigate to the URL displayed in the terminal, replacing the domain with `localhost`
+2. Copy `Dockerfile_template` as `Dockerfile` and provide a [Firebase Real Time Database](https://firebase.google.com/docs/database/) URL as `sys.argv[2]` 
+3. `docker build -t kyleshaver/thesis .`
+4. `docker run -it kyleshaver/thesis:latest`

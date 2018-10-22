@@ -17,4 +17,7 @@ def reset():
     shutil.rmtree(common.KS_APP_RANDOM_FOLDER, True)
     shutil.rmtree(common.KS_APP_LOWEST_LETTER_FOLDER, True)
     shutil.rmtree(common.KS_APP_LEAST_REP_FOLDER, True)
+    shutil.rmtree(common.KS_APP_UNKNOWN_RANDOM_FOLDER, True)
+    shutil.rmtree(common.KS_APP_UNKNOWN_LOWEST_AVG_FOLDER, True)
+    shutil.rmtree(common.KS_APP_UNKNOWN_LOWEST_LETTER_FOLDER, True)
     #shutil.rmtree(common.)

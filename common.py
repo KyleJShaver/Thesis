@@ -23,6 +23,7 @@ KS_APP_LOWEST_LETTER_FOLDER = "app_lowest_letter"
 KS_APP_LEAST_REP_FOLDER = "app_least_rep"
 KS_APP_UNKNOWN_LOWEST_AVG_FOLDER = "app_unknown_lowest_avg"
 KS_APP_UNKNOWN_RANDOM_FOLDER = "app_unknown_random"
+KS_APP_UNKNOWN_LOWEST_LETTER_FOLDER = "app_unknown_lowest_letter"
 
 
 IMAGE_SIZE = 20

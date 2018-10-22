@@ -94,3 +94,16 @@ def unknown_random():
         rand = rows[:common.KS_NUM_CAPTCHAS_ADD]
         rand = list(map(lambda a: os.path.join(common.KS_CAPTCHA_SOLVE_FOLDER, a["CAPTCHA"]) + ".png", rand))
         return rand
+
+def unknown_lowest_letter():
+    with open(common.KS_SOLVE_BASELINE) as solvebase:
+        reader = csv.DictReader(solvebase)
+        rows = []
+        for row in reader:
+            row["MIN"] = min(float(row["CONF1"]), float(row["CONF2"]), float(row["CONF3"]), float(row["CONF4"]))
+            rows.append(row)
+        rows = sorted(rows, key=lambda a: a["MIN"])
+        rows = sorted(rows, key=lambda a: a["CORRECT"])
+        lowest = rows[:common.KS_NUM_CAPTCHAS_ADD]
+        lowest = list(map(lambda a: os.path.join(common.KS_CAPTCHA_SOLVE_FOLDER, a["CAPTCHA"]) + ".png", lowest))
+        return lowest

@@ -141,33 +141,39 @@ while True:
     runapproachprops(random, props)
 
     # Run lowest average confidence
-    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    props = approaches.getprops(common.KS_APP_LOWEST_AVG_FOLDER)
     results_files["lowest_average"] = props["immut"]
     random = approaches.lowest_average()
     runapproachprops(random, props)
 
     # Run lowest letter confidence
-    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    props = approaches.getprops(common.KS_APP_LOWEST_LETTER_FOLDER)
     results_files["lowest_letter_confidence"] = props["immut"]
     random = approaches.lowest_letter()
     runapproachprops(random, props)
 
     # Run least represented letter
-    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    props = approaches.getprops(common.KS_APP_LEAST_REP_FOLDER)
     results_files["least_represented_letter"] = props["immut"]
     random = approaches.least_rep()
     runapproachprops(random, props)
 
     # Run unknown (priority given to lowest average)
-    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    props = approaches.getprops(common.KS_APP_UNKNOWN_LOWEST_AVG_FOLDER)
     results_files["unknown_lowest_average"] = props["immut"]
     random = approaches.unknown_lowest_average()
     runapproachprops(random, props)
 
     # Run unknown (random priority)
-    props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
+    props = approaches.getprops(common.KS_APP_UNKNOWN_RANDOM_FOLDER)
     results_files["unknown_random"] = props["immut"]
     random = approaches.unknown_random()
+    runapproachprops(random, props)
+
+    # Run unknown (priority to lowest letter confidence)
+    props = approaches.getprops(common.KS_APP_UNKNOWN_LOWEST_LETTER_FOLDER)
+    results_files["unknown_random"] = props["immut"]
+    random = approaches.unknown_lowest_letter()
     runapproachprops(random, props)
 
     print("{} Done running all approaches".format(datetime.datetime.now() - start))

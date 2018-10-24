@@ -46,6 +46,7 @@ def parallelcaptchas(num, folder):
                 if p.poll() is not None:
                     if p.returncode == 0:
                         processes.remove(p)
+                        p.kill()
                     else:
                         sys.exit(1)
             if not processes:
@@ -53,7 +54,7 @@ def parallelcaptchas(num, folder):
         print("{} Done generating {} captchas in {}\n\n".format(datetime.datetime.now() - start, num, folder))
 
 while True:
-
+    reset.reset()
     start = datetime.datetime.now()
     UUID = str(uuid.uuid4())
     results_files = dict()
@@ -190,4 +191,3 @@ while True:
     common.sendtofirebase(sys.argv[2], post_data)
 
     print("Total runtime was: {}".format(end - start))
-    reset.reset()

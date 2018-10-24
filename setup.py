@@ -18,16 +18,7 @@ import uuid
 import json
 # import shutil shutil.rmtree()
 
-# --------------------
-# ------ STEP 1 ------
-# --------------------
 
-start = datetime.datetime.now()
-UUID = str(uuid.uuid4())
-results_files = dict()
-results_files["baseline"] = common.KS_IMMUT_BASELINE
-
-print("\nGenerating CAPTCHAs...\n")
 
 def parallelcaptchas(num, folder):
     if os.path.exists(folder):
@@ -62,6 +53,18 @@ def parallelcaptchas(num, folder):
         print("{} Done generating {} captchas in {}\n\n".format(datetime.datetime.now() - start, num, folder))
 
 while True:
+
+    start = datetime.datetime.now()
+    UUID = str(uuid.uuid4())
+    results_files = dict()
+    results_files["baseline"] = common.KS_IMMUT_BASELINE
+
+    # --------------------
+    # ------ STEP 1 ------
+    # --------------------
+
+    print("\nGenerating CAPTCHAs...\n")
+
     # Generate captchas to train the system
     parallelcaptchas(common.KS_CAPTCHA_TRAIN_NUM, common.KS_CAPTCHA_TRAIN_FOLDER)
 

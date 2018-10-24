@@ -53,6 +53,18 @@ def parallelcaptchas(num, folder):
                 break
         print("{} Done generating {} captchas in {}\n\n".format(datetime.datetime.now() - start, num, folder))
 
+def runapproach(addcaptchas, folder, letters, model, label, output):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+        os.makedirs(letters)
+        isolate_letters.isolateletters(common.KS_CAPTCHA_SOLVE_FOLDER, letters, addcaptchas)
+        train.train(common.KS_LETTERS_DST_FOLDER, model, label, letters, common.KS_MODEL_FILE)
+        solve.solve(model, label, common.KS_CAPTCHA_IMMUT_FOLDER, output)
+    common.compareimmut(output)
+
+def runapproachprops(addcaptchas, props):
+    runapproach(addcaptchas, props["folder"], props["letters"], props["model"], props["labels"], props["immut"])
+
 while True:
     reset.reset()
     start = datetime.datetime.now()
@@ -125,60 +137,48 @@ while True:
     # ------ STEP 5 ------
     # --------------------
 
-    def runapproach(addcaptchas, folder, letters, model, label, output):
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-            os.makedirs(letters)
-            isolate_letters.isolateletters(common.KS_CAPTCHA_SOLVE_FOLDER, letters, addcaptchas)
-            train.train(common.KS_LETTERS_DST_FOLDER, model, label, letters, common.KS_MODEL_FILE)
-            solve.solve(model, label, common.KS_CAPTCHA_IMMUT_FOLDER, output)
-        common.compareimmut(output)
-
-    def runapproachprops(addcaptchas, props):
-        runapproach(addcaptchas, props["folder"], props["letters"], props["model"], props["labels"], props["immut"])
-
     print("\nRunning approaches...\n")
     # Run random
     props = approaches.getprops(common.KS_APP_RANDOM_FOLDER)
     results_files["random"] = props["immut"]
-    random = approaches.random()
-    runapproachprops(random, props)
+    addcaptchas = approaches.random()
+    runapproachprops(addcaptchas, props)
 
     # Run lowest average confidence
     props = approaches.getprops(common.KS_APP_LOWEST_AVG_FOLDER)
     results_files["lowest_average"] = props["immut"]
-    random = approaches.lowest_average()
-    runapproachprops(random, props)
+    addcaptchas = approaches.lowest_average()
+    runapproachprops(addcaptchas, props)
 
     # Run lowest letter confidence
     props = approaches.getprops(common.KS_APP_LOWEST_LETTER_FOLDER)
     results_files["lowest_letter_confidence"] = props["immut"]
-    random = approaches.lowest_letter()
-    runapproachprops(random, props)
+    addcaptchas = approaches.lowest_letter()
+    runapproachprops(addcaptchas, props)
 
     # Run least represented letter
     props = approaches.getprops(common.KS_APP_LEAST_REP_FOLDER)
     results_files["least_represented_letter"] = props["immut"]
-    random = approaches.least_rep()
-    runapproachprops(random, props)
+    addcaptchas = approaches.least_rep()
+    runapproachprops(addcaptchas, props)
 
     # Run unknown (priority given to lowest average)
     props = approaches.getprops(common.KS_APP_UNKNOWN_LOWEST_AVG_FOLDER)
     results_files["unknown_lowest_average"] = props["immut"]
-    random = approaches.unknown_lowest_average()
-    runapproachprops(random, props)
+    addcaptchas = approaches.unknown_lowest_average()
+    runapproachprops(addcaptchas, props)
 
     # Run unknown (random priority)
     props = approaches.getprops(common.KS_APP_UNKNOWN_RANDOM_FOLDER)
     results_files["unknown_random"] = props["immut"]
-    random = approaches.unknown_random()
-    runapproachprops(random, props)
+    addcaptchas = approaches.unknown_random()
+    runapproachprops(addcaptchas, props)
 
     # Run unknown (priority to lowest letter confidence)
     props = approaches.getprops(common.KS_APP_UNKNOWN_LOWEST_LETTER_FOLDER)
     results_files["unknown_lowest_letter"] = props["immut"]
-    random = approaches.unknown_lowest_letter()
-    runapproachprops(random, props)
+    addcaptchas = approaches.unknown_lowest_letter()
+    runapproachprops(addcaptchas, props)
 
     print("{} Done running all approaches".format(datetime.datetime.now() - start))
 

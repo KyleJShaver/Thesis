@@ -84,11 +84,11 @@ def compareimmut(app_file):
         basereader = csv.DictReader(immut_base)
         baseavg, baseinc = avginccounts(basereader)
 
-    with open(app_file) as app_res:
-        appreader = csv.DictReader(app_res)
-        appavg, appinc = avginccounts(appreader)
+        with open(app_file) as app_res:
+            appreader = csv.DictReader(app_res)
+            appavg, appinc = avginccounts(appreader)
 
-    print("Results went from avg of {:.4f} with {} incorrect to avg of {:.4f} with {} incorrect".format(baseavg, baseinc, appavg, appinc))
+            print("Results went from avg of {:.4f} with {} incorrect to avg of {:.4f} with {} incorrect".format(baseavg, baseinc, appavg, appinc))
 
 def sendtofirebase(url, data):
     conn = http.client.HTTPSConnection(url)

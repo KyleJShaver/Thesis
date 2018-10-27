@@ -5,17 +5,17 @@ import http.client
 import json
 
 KS_CAPTCHA_TRAIN_FOLDER = "captchas_train"
-KS_CAPTCHA_TRAIN_NUM = 250
+KS_CAPTCHA_TRAIN_NUM = 1000
 KS_CAPTCHA_SOLVE_FOLDER = "captchas_solve"
-KS_CAPTCHA_SOLVE_NUM = 250
+KS_CAPTCHA_SOLVE_NUM = 1000
 KS_CAPTCHA_IMMUT_FOLDER = "captchas_immut"
-KS_CAPTCHA_IMMUT_NUM = 250
+KS_CAPTCHA_IMMUT_NUM = 1000
 KS_LETTERS_DST_FOLDER = "letters"
 KS_MODEL_FILE = "model.hdf5"
 KS_LABEL_FILE = "labels.dat"
 KS_SOLVE_BASELINE = "solve_baseline.csv"
 KS_IMMUT_BASELINE = "immut_baseline.csv"
-KS_NUM_CAPTCHAS_ADD = 25
+KS_NUM_CAPTCHAS_ADD = 100
 
 KS_APP_LOWEST_AVG_FOLDER = "app_lowest_avg"
 KS_APP_RANDOM_FOLDER = "app_random"
